@@ -1,0 +1,28 @@
+{
+  "name": "@ngrxs/permission-based-authorization",
+  "version": "1.0.0-beta2",
+  "description": "An angular permission based authorization",
+  "license": "MIT",
+  "main": "index.js",
+  "peerDependencies": {
+    "@angular/common": "^17.1.0",
+    "@angular/core": "^17.1.0",
+    "@angular/router": "^17.1.0",
+    "rxjs": "^6.5.3 || ^7.8.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "author": "Rosen Kolev",
+  "keywords": [
+    "angular"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngrxs/permission-based-authorization.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
