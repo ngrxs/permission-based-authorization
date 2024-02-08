@@ -35,6 +35,8 @@
   ],
   "words": [
     "ngrx",
-	"ngrxs"
+	  "ngrxs",
+    "oidc",
+    "jwks"
   ]
 }

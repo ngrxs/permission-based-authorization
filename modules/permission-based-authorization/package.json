@@ -1,6 +1,6 @@
 {
   "name": "@ngrxs/permission-based-authorization",
-  "version": "1.0.0-beta2",
+  "version": "1.0.0",
   "description": "An angular permission based authorization",
   "license": "MIT",
   "main": "index.js",
