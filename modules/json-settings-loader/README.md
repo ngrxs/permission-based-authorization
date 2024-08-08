@@ -1,186 +1,78 @@
-# @ngrxs/permission-based-authorization
+# @ngrxs/json-settings-loader
 
-`@ngrxs/permission-based-authorization` library that provide a common authentication based on permissions and not roles.
+`@ngrxs/json-settings-loader` library that provide a loading of configurations from JSON file.
 
 ## Installation
 
 1.  Install the library:
     ```shell
-    npm install --save @ngrxs/permission-based-authorization
+    npm install --save @ngrxs/json-settings-loader
     ```
 
-1.  Use `providePermissionBasedAuthorization`, `AuthFlowService` and `AuthPermissionsService` in `app.config.ts`:
+1.  Use `provideJsonSettings` and `FromJson` decorator
 
     ```typescript
+    // file: app.settings.ts
+    
+    import { provideJsonSettings, FromJson } from '@ngrxs/json-settings-loader';
 
-    import { ApplicationConfig } from '@angular/core';
-    import { providePermissionBasedAuthorization, AuthFlowService, AuthPermissionsService, AuthDebugService } from '@ngrxs/permission-based-authorization';
-
-    enum PagePermissions {
-      None = 0,
-      ViewDashboard = 1,
-      ViewUsers = 2,
+    @FromJson({
+      url: 'app.settings.json',
+      transform: (data) => ({ ...data, apiUrl: trimEndingSlashIfExists(data.apiUrl) })
+    })
+    export class AppSettings {
+      apiUrl: string,
+      tokenIssuer: string,
+      environmentName: string
     }
+
+    export const provideAppSettins = () =>
+      provideJsonSettings(AppSettings);
+    ```
+
+    ```typescript
+    // file: app.config.ts
+    
+    import { ApplicationConfig } from '@angular/core';
+    import { provideAppSettins } from './app.settings';
 
     export const appConfig: ApplicationConfig = {
       providers: [
-        { provide: AuthFlowService, useClass: AuthDebugService },
-        { provide: AuthPermissionsService, useClass: AuthDebugService },
-        providePermissionBasedAuthorization({
-          routePermissions: {
-            '/': null,
-            '/dashboard': PagePermission.ViewDashboard,
-            '/users': PagePermission.ViewUsers,
-          },
-          signInUrl: '/',
-        })
+        provideAppSettins()
       ]
     };
 
     ```
 
-1. Use in `app.routes.ts`
+    ```typescript
+    // use anywere
+    
+    import { AppSettings } from './app.settings';
 
-   ```typescript
+    @Injectable()
+    export class MyService {
+      #appSettings = inject(AppSettings);
+    };
 
-   import { AuthFlowService, AuthRouteCheckService } from '@ngrxs/permission-based-authorization';
-   
-   const authLoginRedirect: CanActivateFn = (route: ActivatedRouteSnapshot): UrlTree | boolean => {
-     const isLoggedIn = inject(AuthFlowService).isLoggedIn;
-     return isLoggedIn ? createUrlTreeFromSnapshot(route, ['home']) : true;
-   };
+    ```
 
-   const canActivateRoute: CanActivateFn = (_, state: RouterStateSnapshot) =>
-     inject(AuthRouteCheckService).checkRoutePermission(state.url);
+## Setup
 
-   const canActivateChildRoute: CanActivateChildFn = (_, state: RouterStateSnapshot) =>
-     inject(AuthRouteCheckService).checkRoutePermission(state.url);
-
-   export const routes: Routes = [
-      /** routes */
-   ];
-
-   ```  
-
-## Usage
-
-Provides auth based on permissions.
-
-## Real world auth service
+Use the `setupJsonSettings` for setup.
 
 ```typescript
-import { AuthFlowService, AuthPermissionsService } from '@ngrxs/permission-based-authorization';
+// file: app.config.ts
+import setupJsonSettings from '@ngrxs/json-settings-loader';
 
-import { OAuthService } from 'angular-oauth2-oidc';
-import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
-
-@Injectable()
-export class AuthGoogleService implements AuthFlowService {
-  #user: { given_name: string } | null = null;
-  #oauth: OAuthService;
-
-  constructor(settings: AppSettings, oauthService: OAuthService) {
-    const oauthConfigs = getAuthConfig(settings);
-    oauthService.configure({
-      issuer: 'https://accounts.google.com',
-      redirectUri: settings.webBasePath + 'oauth-callback',
-      clientId: settings.googleClientId,
-      scope: 'openid profile email',
-      sessionChecksEnabled: true,
-      strictDiscoveryDocumentValidation: false,
-    });
-    oauthService.tokenValidationHandler = new JwksValidationHandler();
-
-    this.#oauth = oauthService;
-  }
-
-  get isLoggedIn(): boolean {
-    return this.#oauth.hasValidAccessToken();
-  }
-
-  get name(): string {
-    return this.#user === null ? '' : this.#user.given_name;
-  }
-
-  getBearerToken(): string {
-    return this.#oauth.getIdToken();
-  }
-
-  signOut(): void {
-    this.#oauth.logOut();
-  }
-
-  startAuthentication(): void {
-    void this.#oauth.loadDiscoveryDocumentAndLogin();
-  }
-
-  async completeAuthentication(): Promise<boolean> {
-    const successLogin = await this.#oauth.loadDiscoveryDocumentAndTryLogin({ });
-    if (!successLogin) return false;
-
-    this.#user = await this.#oauth
-      .loadUserProfile()
-      .then(it => it as GoogleUserInfo)
-      .catch(error => {
-        console.error(error);
-        return null;
-      });
-
-    return true;
-  }
-}
-
-@Injectable()
-export class AuthApiPermissionsService implements AuthPermissionsService {
-  #permissionsLoaded$ = new BehaviorSubject(false);
-  #permissions$ = new BehaviorSubject<number | null>(null);
-  #http = inject(HttpClient);
-
-  get permissions$(): Observable<number | null> {
-    return this.#permissions$;
-  }
-
-  get permissionsLoaded$(): Observable<boolean> {
-    return this.#permissionsLoaded$;
-  }
-
-  startPermissionsLoading(): void {
-    this.#http.get<{ permissions: number }>('api/v1/profile').subscribe({
-      next: ({ permissions }) => this.#permissions$.next(permissions),
-      error: () => this.#permissions$.next(0),
-      finally: () => this.#permissionsLoaded$.next(true),
-    })
-  }
-}
-```
-
-### OpenId Connect Callback
-
-```typescript
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AuthCallbackService } from '@ngrxs/permission-based-authorization';
-
-@Component({
-  selector: 'app-auth-callback',
-  standalone: true,
-  template: '<p>Please wait while we redirect you back</p>',
-  changeDetection: ChangeDetectionStrategy.OnPush
+setupJsonSettings({
+  debug: (msg) => { console.log(msg) },
+  applicationStartWaitJsonSettings: false,
+  loader: (url) => fetch(url)
 })
-export class AuthCallbackComponent {
-  constructor(auth: AuthCallbackService) {
-    auth.completeAuthentication();
-  }
-}
 ```
 
-## Interfaces
-
-```typescript
-interface AuthFeatureOptions {
-  routePermissions: { [route: string]: number } // all route access permissions
-  homeUrl: string; // home page url
-  signInUrl: string; // login page
-  signInCallbackUrl: string; // openid-connect callback url
-  noAccessUrl: string; // no access url
-}
-```
+| property | value |
+| -------- | ----- |
+| debug    | Handle debug messages; <br> `true \| (msg: string) => void` (default to `empty function`) |
+| applicationStartWaitJsonSettings | Application start waits for the json to be loaded <br> `boolean` (default to `true`) |
+| loader | The HTTP loaded function <br> `(url: string) => Promise<unknown>` (default to using XMLHttpRequest) |
