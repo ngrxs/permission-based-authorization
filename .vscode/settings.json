@@ -19,7 +19,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "angular.enable-strict-mode-prompt": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
