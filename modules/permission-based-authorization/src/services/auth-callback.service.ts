@@ -10,7 +10,11 @@ export class AuthCallbackService {
   #navigateFn = inject(AUTH_NAV_FN);
 
   completeAuthentication(): void {
-    this.#auth
+    void this.completeAuthenticationAsync();
+  }
+
+  completeAuthenticationAsync(): Promise<void> {
+    return this.#auth
       .completeAuthentication()
       .then((success) => {
         if (success) {

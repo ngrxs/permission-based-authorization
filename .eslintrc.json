@@ -5,8 +5,7 @@
   ],
   "plugins": [
     "@typescript-eslint",
-    "prettier",
-    "@ngrx"
+    "prettier"
   ],
   "overrides": [
     {
@@ -31,8 +30,7 @@
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "plugin:prettier/recommended",
-        "plugin:@ngrx/eslint-plugin/recommended"
+        "plugin:prettier/recommended"
       ],
       "rules": {
         "@angular-eslint/directive-selector": ["off"],

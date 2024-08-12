@@ -59,10 +59,10 @@ const config = {
   // The threshold is set per `ESP007.2`.
   coverageThreshold: {
     global: {
-      branches: 10,
-      functions: 10,
-      lines: 10,
-      statements: 10,
+      branches: 80,
+      functions: 55,
+      lines: 55,
+      statements: 55,
     },
   },
   reporters: reporters,

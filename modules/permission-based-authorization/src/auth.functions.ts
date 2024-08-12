@@ -14,8 +14,8 @@ function compileRoutePermission(routes: Record<string, number | null>): PageRout
         idx <= -1
           ? null
           : idx === lastIdxWhenStars
-          ? new RegExp('^' + route.substring(0, lastIdxWhenStars))
-          : new RegExp('^' + route.replace('**', '[\\w-]+') + '$');
+            ? new RegExp('^' + route.substring(0, lastIdxWhenStars))
+            : new RegExp('^' + route.replace('**', '[\\w-]+') + '$');
 
       arr.push({ route, permission: routes[route], regex });
     }
