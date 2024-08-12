@@ -1,14 +1,14 @@
 {
   "name": "@ngrxs/permission-based-authorization",
-  "version": "1.0.0",
+  "version": "18.0.0",
   "description": "An angular permission based authorization",
   "license": "MIT",
   "main": "index.js",
   "peerDependencies": {
-    "@angular/common": "^17.1.0",
-    "@angular/core": "^17.1.0",
-    "@angular/router": "^17.1.0",
-    "rxjs": "^6.5.3 || ^7.8.0"
+    "@angular/common": "^18.1.4",
+    "@angular/core": "^18.1.4",
+    "@angular/router": "^18.1.4",
+    "rxjs": "^6.5.3 || ^7.8.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"
