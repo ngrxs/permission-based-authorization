@@ -1,6 +1,11 @@
 {
   "extends": "../../tsconfig.base.json",
+  "include": ["**/*.ts"],
+  "exclude": ["**/*.spec.ts"],
   "files": ["public_api.ts"],
+  "compilerOptions": {
+    "outDir": "../../dist/modules/permission-based-authorization",
+  },
   "angularCompilerOptions": {
     "annotateForClosureCompiler": true,
     "compilationMode": "partial",

@@ -56,13 +56,13 @@ const config = {
     '!**/*.stories.ts',
     '!**/*.d.ts',
   ],
-  // The threshold is set per `ESP007.2`.
+
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 55,
-      lines: 55,
-      statements: 55,
+      branches: 85,
+      functions: 75,
+      lines: 85,
+      statements: 85,
     },
   },
   reporters: reporters,

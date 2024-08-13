@@ -1,7 +1,7 @@
 import { inject, makeEnvironmentProviders } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthRouteCheckService } from './services/auth-route-check.service';
+import { AuthCheckService } from './services/auth-check.service';
 import {
   AUTH_GET_ROUTE_PERMISSION_FN,
   AUTH_NAV_FN,
@@ -31,7 +31,7 @@ export const providePermissionBasedAuthorization = <T extends Permission>(
   const ops = { ...defaultOptions, ...options };
   return makeEnvironmentProviders([
     AuthCallbackService,
-    AuthRouteCheckService,
+    AuthCheckService,
     {
       provide: AUTH_GET_ROUTE_PERMISSION_FN,
       useValue: createGetPermission(ops.routePermissions as Record<string, number | null>)

@@ -10,7 +10,6 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "downlevelIteration": true,
-    "outDir": "./dist/out",
     "paths": {},
     "rootDir": ".",
     "sourceMap": true,
