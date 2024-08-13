@@ -104,7 +104,9 @@ describe('AuthRouteCheckService', () => {
     permissionsFn.mockReturnValueOnce(new Promise(() => {}));
 
     let completed = false;
-    firstValueFrom(spectator.service.checkPermission(4)).finally(() => (completed = true));
+    firstValueFrom(spectator.service.checkPermission(4))
+      .finally(() => (completed = true))
+      .catch(() => {});
 
     expect(completed).toBe(false);
   });
@@ -127,7 +129,7 @@ describe('AuthRouteCheckService', () => {
 
   it('deferred checkPermission should return when permission available', fakeAsync(() => {
     when(routePermissionsFn).calledWith('/deferred-test-url').mockReturnValueOnce(256);
-    let permissionsResolve = (value: number) => {};
+    let permissionsResolve: (value: number) => void = () => {};
     permissionsFn.mockReturnValueOnce(
       new Promise((resolve) => {
         permissionsResolve = resolve;
@@ -139,9 +141,11 @@ describe('AuthRouteCheckService', () => {
     const obs = spectator.service.deferredCheckRoutePermission((check) =>
       check('/deferred-test-url')
     );
-    const task = firstValueFrom(obs)
-      .then((data) => (result = data))
-      .finally(() => (completed = true));
+
+    firstValueFrom(obs)
+      .then<boolean, void>((data) => (result = data))
+      .finally(() => (completed = true))
+      .catch(() => {});
 
     tick(100);
     expect(completed).toBe(false);

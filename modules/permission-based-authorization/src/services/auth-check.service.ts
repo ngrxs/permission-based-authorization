@@ -7,6 +7,7 @@ import { AuthFlowService, AuthPermissionsService } from './auth.service';
 import { AUTH_GET_ROUTE_PERMISSION_FN, AUTH_NAV_FN, AUTH_OPTIONS } from '../auth.models';
 import { checkPermission } from '../auth.functions';
 
+type Check = (route: string) => boolean;
 @Injectable()
 export class AuthCheckService {
   readonly #authFlow = inject(AuthFlowService);
@@ -58,7 +59,7 @@ export class AuthCheckService {
       filter((permissions): permissions is number => permissions !== null),
       take(1),
       map((access) => {
-        const checkRoutePermission = this.#checkRoutePermissionFn.bind(this, access);
+        const checkRoutePermission = this.#checkRoutePermissionFn.bind(this, access) as Check;
         return act(checkRoutePermission);
       })
     );

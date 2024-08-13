@@ -63,7 +63,7 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
         with:
-          path: dist/out
+          path: dist/modules/permission-based-authorization
       - uses: mukunku/tag-exists-action@v1.4.0
         id: check-tag
         with:
@@ -93,6 +93,6 @@ jobs:
           prerelease: false
       - name: Publish
         run: |
-          cd dist/out/
+          cd dist/modules/permission-based-authorization
           npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
           npm publish
